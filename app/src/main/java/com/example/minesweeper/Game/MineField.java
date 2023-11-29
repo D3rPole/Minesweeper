@@ -10,6 +10,7 @@ public class MineField {
     boolean[][] flagged;
     int width;
     int height;
+    int mineCount = 0;
 
     MineField(int width, int height){
         field = new boolean[width][height];
@@ -24,8 +25,17 @@ public class MineField {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 field[i][j] = random.nextFloat() < p;
+                if(field[i][j]) mineCount++;
                 lookedAt[i][j] = false;
                 flagged[i][j] = false;
+            }
+        }
+    }
+
+    public void showEverything(){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                lookedAt[i][j] = true;
             }
         }
     }
@@ -33,6 +43,7 @@ public class MineField {
     public int lookAt(int x, int y){
         if(x < 0 || y < 0 || x >= width || y >= height || lookedAt[x][y]) return 0;
         lookedAt[x][y] = true;
+        flagged[x][y] = false;
         if(field[x][y]){
             return -1;
         }
@@ -52,6 +63,23 @@ public class MineField {
             return;
         }
         flagged[x][y] = !flagged[x][y];
+    }
+
+    boolean checkForWin(){
+        int rightGuessCount = 0;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                boolean isMine = field[i][j];
+                boolean isFlagged = flagged[i][j];
+                if(isMine && isFlagged){
+                    rightGuessCount++;
+                }else if(isFlagged){
+                    rightGuessCount--;
+                }
+            }
+        }
+        Log.i("aaa", rightGuessCount + " " + mineCount);
+        return rightGuessCount == mineCount;
     }
 
     public int checkNeighbours(int x, int y){

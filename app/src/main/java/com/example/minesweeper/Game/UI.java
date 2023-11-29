@@ -64,6 +64,10 @@ public class UI {
                 if(mineField.field[i][j]){
                     paint.setColor(Color.rgb(50,50,50));
                     canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/2.5f,paint);
+                    if(mineField.flagged[i][j]){
+                        paint.setColor(Color.rgb(255,50,50));
+                        canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/5f,paint);
+                    }
                     continue;
                 }
                 int check = mineField.checkNeighbours(i,j);
@@ -84,6 +88,25 @@ public class UI {
         for (int i = 0; i <= height; i++) {
             canvas.drawLine(0,i*distY,width ,i*distY, paint);
         }
+        view.postInvalidate();
+    }
+
+    void drawExploded(int x, int y, MineField mineField){
+        paint.setColor(Color.RED);
+        int mineFieldWidth = mineField.width;
+        int mineFieldHeight = mineField.height;
+        float distX = (float) width / mineFieldWidth;
+        float distY = (float) height / mineFieldHeight;
+        canvas.drawCircle(distX*x + distX/2,distY*y + distY/2,distX/2.5f,paint);
+        view.postInvalidate();
+    }
+
+    void drawInMiddle(String text, int color){
+        paint.setColor(color);
+        paint.setTextSize(128);
+        Rect bounds = new Rect();
+        paint.getTextBounds(String.valueOf(text),0,text.length()-1,bounds);
+        canvas.drawText(text,width / 2f - bounds.width() / 2f,height / 2f + bounds.height() / 2f,paint);
         view.postInvalidate();
     }
 

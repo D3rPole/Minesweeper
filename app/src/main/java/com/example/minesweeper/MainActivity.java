@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                              height.getSelectedItemPosition() + 5,
                                    probabilities[diff.getSelectedItemPosition()],
                                    findViewById(R.id.gameView));
-            game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton));
+            game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton), findViewById(R.id.flagTapIndicator));
         });
     }
 }
