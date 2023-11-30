@@ -57,7 +57,11 @@ public class UI {
                     canvas.drawRect(rect,paint);
                     if(mineField.flagged[i][j]){
                         paint.setColor(Color.rgb(255,50,50));
-                        canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/5f,paint);
+                        float textWidth = paint.measureText("\uD83D\uDEA9");
+                        Rect bounds = new Rect();
+                        paint.getTextBounds("\uD83D\uDEA9",0,1,bounds);
+                        canvas.drawText("\uD83D\uDEA9", distX*i + distX / 2 - textWidth / 2f,distY*j + distY / 2 + bounds.height()/2f,paint);
+                        //canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/5f,paint);
                     }
                     continue;
                 }
@@ -66,7 +70,11 @@ public class UI {
                     canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/2.5f,paint);
                     if(mineField.flagged[i][j]){
                         paint.setColor(Color.rgb(255,50,50));
-                        canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/5f,paint);
+                        float textWidth = paint.measureText("\uD83D\uDEA9");
+                        Rect bounds = new Rect();
+                        paint.getTextBounds("\uD83D\uDEA9",0,1,bounds);
+                        canvas.drawText("\uD83D\uDEA9", distX*i + distX / 2 - textWidth / 2f,distY*j + distY / 2 + bounds.height()/2f,paint);
+                        //canvas.drawCircle(distX*i + distX/2,distY*j + distY/2,distX/5f,paint);
                     }
                     continue;
                 }

@@ -78,7 +78,6 @@ public class MineField {
                 }
             }
         }
-        Log.i("aaa", rightGuessCount + " " + mineCount);
         return rightGuessCount == mineCount;
     }
 

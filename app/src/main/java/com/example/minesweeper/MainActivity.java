@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             0.2f,  // mid
             0.3f,  // hard
             0.4f,  // expert
-            0.9f   //expert+ ?
+            0.5f   //expert+ ?
     };
 
     Game game;

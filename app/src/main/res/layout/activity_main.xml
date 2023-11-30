@@ -183,7 +183,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:clickable="false"
-            android:text="🚩" />
+            android:text="👇" />
 
 
     </LinearLayout>
