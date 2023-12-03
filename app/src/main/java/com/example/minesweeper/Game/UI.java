@@ -6,21 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.example.minesweeper.Game.Physics.PhysicsObject;
 import com.example.minesweeper.Game.Physics.Scene;
-import com.example.minesweeper.MainActivity;
-import com.example.minesweeper.R;
 
 public class UI {
     ImageView view;
-    private Paint paint;
-    private Bitmap bitmap;
-    private Canvas canvas;
+    private final Paint paint;
+    private final Canvas canvas;
     final int height;
     final int width;
     int textSize;
@@ -28,11 +22,11 @@ public class UI {
     UI(int width, int height, ImageView view){
         this.width = width;
         this.height = height;
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(this.bitmap);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
         paint = new Paint();
         this.view = view;
-        this.view.setImageBitmap(this.bitmap);
+        this.view.setImageBitmap(bitmap);
 
         this.view.setActivated(true);
         this.view.setClickable(true);
@@ -82,7 +76,7 @@ public class UI {
                 }
                 int check = mineField.checkNeighbours(i,j);
                 if(check != 0){
-                    float f[] = new float[]{120f - check * 15,1f,1f};
+                    float[] f = new float[]{120f - check * 15,1f,1f};
                     paint.setColor(Color.HSVToColor(f));
                     float textWidth = paint.measureText(String.valueOf(check));
                     Rect bounds = new Rect();
@@ -135,10 +129,14 @@ public class UI {
             }
 
             if(object.isMine){
-                paint.setColor(Color.rgb(50,50,50));
+                if(object.explosionSource){
+                    paint.setColor(Color.RED);
+                }else {
+                    paint.setColor(Color.rgb(50, 50, 50));
+                }
                 canvas.drawCircle(object.pos.x, object.pos.y, object.width / 2.5f, paint);
             }else if(object.neighbours > 0){
-                float f[] = new float[]{120f - object.neighbours * 15,1f,1f};
+                float[] f = new float[]{120f - object.neighbours * 15,1f,1f};
                 paint.setColor(Color.HSVToColor(f));
                 float textWidth = paint.measureText(String.valueOf(object.neighbours));
                 Rect bounds = new Rect();

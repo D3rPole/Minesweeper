@@ -1,14 +1,12 @@
 package com.example.minesweeper.Game.Physics;
 
-import android.util.Log;
-
 import com.example.minesweeper.Game.MineField;
 
 public class Scene {
     public PhysicsObject[] objects;
 
-    private float xDist;
-    private float yDist;
+    private final float xDist;
+    private final float yDist;
     public Scene(MineField mineField, int uiWidth, int uiHeight){
         xDist = (float) uiWidth / mineField.width;
         yDist = (float) uiHeight / mineField.height;
@@ -36,7 +34,7 @@ public class Scene {
                 continue;
             }
             object.addVel(object.pos.subtract(pos).multiply(100f / dist));
-            object.addVel(Vec2.random(-10,10));
+            object.addVel(Vec2.random(-30,30));
         }
     }
 
