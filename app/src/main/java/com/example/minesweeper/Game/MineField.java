@@ -5,11 +5,11 @@ import android.util.Log;
 import java.util.Random;
 
 public class MineField {
-    boolean[][] field;
-    boolean[][] lookedAt;
-    boolean[][] flagged;
-    int width;
-    int height;
+    public boolean[][] field;
+    public boolean[][] lookedAt;
+    public boolean[][] flagged;
+    public int width;
+    public int height;
     int mineCount = 0;
 
     MineField(int width, int height){

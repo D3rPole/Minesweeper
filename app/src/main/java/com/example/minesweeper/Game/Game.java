@@ -2,10 +2,14 @@ package com.example.minesweeper.Game;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.example.minesweeper.Game.Physics.Scene;
 
 public class Game {
     MineField mineField;
@@ -16,6 +20,10 @@ public class Game {
     private Button tapButton;
     private Button indicator;
     private boolean gameEnd = false;
+
+    private Scene physicsScene;
+
+    boolean running;
 
     @SuppressLint("ClickableViewAccessibility")
     public Game(int width, int height, float probability, ImageView view){
@@ -59,7 +67,28 @@ public class Game {
                         ui.drawMineField(mineField);
                         ui.drawExploded(x,y,mineField);
                         gameEnd = true;
-                        ui.drawInMiddle("YOU LOST!", Color.RED);
+                        physicsScene = new Scene(mineField, ui.width, ui.height);
+                        physicsScene.explodeAt(x, y);
+                        Handler handler = new Handler();
+                        running = true;
+                        new Thread(() -> {
+                            while (running){
+                                physicsScene.update(1f / Config.simTPS);
+                                try {
+                                    Thread.sleep(1000 / Config.simTPS);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }).start();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(ui == null) return;
+                                ui.drawPhysicsScene(physicsScene);
+                                handler.postDelayed(this, 1000 / Config.simFPS); // Schedule next redraw
+                            }
+                        });
                         return true;
                     }
                 }
@@ -95,5 +124,6 @@ public class Game {
         tapButton.setOnClickListener(null);
         ui = null;
         mineField = null;
+        running = false;
     }
 }

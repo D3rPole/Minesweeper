@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //game = new Game(findViewById(R.id.gameView));
         initiateMenu();
+        startFirstGame();
     }
 
     @SuppressLint("SetTextI18n")
@@ -70,12 +71,19 @@ public class MainActivity extends AppCompatActivity {
             if(game != null){
                 game.close();
             }
-            start.setText("Restart game");
             game = new Game(  width.getSelectedItemPosition() + 5,
                              height.getSelectedItemPosition() + 5,
                                    probabilities[diff.getSelectedItemPosition()],
                                    findViewById(R.id.gameView));
             game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton), findViewById(R.id.flagTapIndicator));
         });
+    }
+
+    public void startFirstGame(){
+        game = new Game(  width.getSelectedItemPosition() + 5,
+                height.getSelectedItemPosition() + 5,
+                probabilities[diff.getSelectedItemPosition()],
+                findViewById(R.id.gameView));
+        game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton), findViewById(R.id.flagTapIndicator));
     }
 }

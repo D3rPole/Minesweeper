@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.minesweeper.Game.Physics.PhysicsObject;
+import com.example.minesweeper.Game.Physics.Scene;
 import com.example.minesweeper.MainActivity;
 import com.example.minesweeper.R;
 
@@ -21,7 +23,7 @@ public class UI {
     private Canvas canvas;
     final int height;
     final int width;
-
+    int textSize;
     @SuppressLint("ClickableViewAccessibility")
     UI(int width, int height, ImageView view){
         this.width = width;
@@ -46,7 +48,7 @@ public class UI {
         float distX = (float) width / mineFieldWidth;
         float distY = (float) height / mineFieldHeight;
 
-        int textSize = 640/Math.max(mineFieldHeight, mineFieldWidth);
+        textSize = 640/Math.max(mineFieldHeight, mineFieldWidth);
         paint.setTextSize(textSize);
 
         for (int i = 0; i < mineField.width; i++) {
@@ -118,4 +120,33 @@ public class UI {
         view.postInvalidate();
     }
 
+    void drawPhysicsScene(Scene scene){
+        canvas.drawColor(Color.rgb(170,170,170));
+        paint.setTextSize(textSize);
+        for(PhysicsObject object : scene.objects){
+            paint.setColor(Color.rgb(120,120,120));
+
+            if(!object.explosionSource) {
+                canvas.drawRect(
+                        object.pos.x - object.width / 2,
+                        object.pos.y - object.height / 2,
+                        object.pos.x + object.width / 2,
+                        object.pos.y + object.height / 2, paint);
+            }
+
+            if(object.isMine){
+                paint.setColor(Color.rgb(50,50,50));
+                canvas.drawCircle(object.pos.x, object.pos.y, object.width / 2.5f, paint);
+            }else if(object.neighbours > 0){
+                float f[] = new float[]{120f - object.neighbours * 15,1f,1f};
+                paint.setColor(Color.HSVToColor(f));
+                float textWidth = paint.measureText(String.valueOf(object.neighbours));
+                Rect bounds = new Rect();
+                paint.getTextBounds(String.valueOf(object.neighbours),0,1,bounds);
+                canvas.drawText(String.valueOf(object.neighbours), object.pos.x - textWidth / 2f,object.pos.y + bounds.height()/2f,paint);
+            }
+        }
+        view.invalidate();
+        drawInMiddle("YOU LOST!", Color.RED);
+    }
 }

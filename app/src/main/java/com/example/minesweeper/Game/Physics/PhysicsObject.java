@@ -3,8 +3,16 @@ package com.example.minesweeper.Game.Physics;
 import com.example.minesweeper.Game.Config;
 
 public class PhysicsObject {
-    private Vec2 pos;
+    public Vec2 pos;
     private Vec2 vel;
+
+    public boolean explosionSource = false;
+    public boolean lookedAt;
+    public boolean flagged;
+    public boolean isMine;
+    public int neighbours;
+    public float width;
+    public float height;
 
     public PhysicsObject(Vec2 pos) {
         this.pos = pos;
@@ -19,5 +27,9 @@ public class PhysicsObject {
         // Update position using velocity and deltaTime
         Vec2 deltaPos = vel.multiply(deltaTime);
         pos = pos.add(deltaPos);
+    }
+
+    public void addVel(Vec2 vel){
+        this.vel = this.vel.add(vel);
     }
 }
