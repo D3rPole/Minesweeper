@@ -1,14 +1,24 @@
 package com.example.minesweeper.Physics;
 
+import android.graphics.Rect;
+import android.util.Log;
+
 import com.example.minesweeper.Game.Config;
 import com.example.minesweeper.Game.MineField;
 
+import java.util.LinkedList;
+import java.util.Objects;
+
 public class Scene {
     public PhysicsObject[] objects;
-
     private final float xDist;
     private final float yDist;
+    private final Rect simulationRect;
+    private LinkedList<PhysicsObject>[][] grid;
+    private int gridWidth = 10;
+    private int gridHeight = 10;
     public Scene(MineField mineField, int uiWidth, int uiHeight){
+        simulationRect = new Rect(-250,-250, (int) ((float) uiWidth + 250), (int) ((float) uiHeight + 250));
         xDist = (float) uiWidth / mineField.width;
         yDist = (float) uiHeight / mineField.height;
         objects = new PhysicsObject[mineField.height * mineField.width];
@@ -23,6 +33,20 @@ public class Scene {
                 object.height = yDist - 1;
                 objects[y * mineField.width + x] = object;
             }
+        }
+    }
+
+    private void updateGrid(){
+        grid = new LinkedList[gridWidth][gridHeight];
+        for(PhysicsObject object : objects){
+            if(object.explosionSource) continue;
+            int x =  (int) (gridWidth*(object.pos.x - simulationRect.left)/simulationRect.width());
+            int y = (int) (gridHeight*(object.pos.y - simulationRect.top)/simulationRect.height());
+            if(x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) continue;
+            if(grid[x][y] == null){
+                grid[x][y] = new LinkedList<PhysicsObject>();
+            }
+            grid[x][y].add(object);
         }
     }
 
@@ -43,11 +67,33 @@ public class Scene {
         for(PhysicsObject object : objects){
             if(object.explosionSource) continue;
             object.update(dTime, Config.gravity);
-            for(PhysicsObject other : objects){
+        }
+
+        updateGrid();
+
+        for(PhysicsObject object : objects){
+            if(object.explosionSource) continue;
+            int x =  (int) (gridWidth*(object.pos.x - simulationRect.left)/simulationRect.width());
+            int y = (int) (gridHeight*(object.pos.y - simulationRect.top)/simulationRect.height());
+            LinkedList<PhysicsObject> collideWith = new LinkedList<>();
+            for (int i = -1; i <= 1; i++) {
+                if(x + i < 0 || x + i >= gridWidth) continue;
+                for (int j = -1; j <= 1; j++) {
+                    if(y + j < 0 || y + j >= gridHeight) continue;
+                    if(grid[x+i][y+j] == null) continue;
+                    if(grid[x+i][y+j].size() == 0) continue;
+                    collideWith.addAll(grid[x+i][y+j]);
+                }
+            }
+            for(PhysicsObject other : collideWith){
                 if(other == object) continue;
                 if(other.explosionSource) continue;
                 object.collide(other);
             }
+        }
+
+        for(PhysicsObject object : objects){
+            object.clampInBoundingbox(simulationRect);
         }
     }
 }

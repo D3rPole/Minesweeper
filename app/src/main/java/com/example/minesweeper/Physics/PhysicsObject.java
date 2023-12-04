@@ -23,17 +23,29 @@ public class PhysicsObject {
         Vec2 tempPos = pos;
         pos = pos.add(pos.subtract(prev_pos)).add(acc.multiply(dTime*dTime));
         prev_pos = tempPos;
-        colliding = false;
+    }
+
+    public void clampInBoundingbox(Rect rect){
+        if(pos.x < rect.left + width){
+            pos.x = rect.left + width;
+        }
+        if(pos.x > rect.right - width){
+            pos.x = rect.right - width;
+        }
+        if(pos.y < rect.top + height){
+            pos.y = rect.top + height;
+        }
+        if(pos.y > rect.bottom - height){
+            pos.y = rect.bottom - height;
+        }
     }
 
     public void addVel(Vec2 vel,float dTime){
         prev_pos = prev_pos.subtract(vel.multiply(dTime));
     }
-    public boolean colliding = false;
     public void collide(PhysicsObject other){
         CollisionResult collisionResult = this.getCollisionInfo(other);
         if (collisionResult.isColliding){
-            colliding = true;
             pos = pos.add(collisionResult.normal.multiply(collisionResult.penetrationDepth / 2));
             other.pos.subtract(collisionResult.normal.multiply(collisionResult.penetrationDepth / 2));
         }

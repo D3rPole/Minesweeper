@@ -3,12 +3,18 @@ package com.example.minesweeper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.example.minesweeper.Game.Config;
 import com.example.minesweeper.Game.Game;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +22,26 @@ public class MainActivity extends AppCompatActivity {
     Spinner height;
     Spinner diff;
     Button start;
+
+    SensorManager sensorManager;
+    Sensor accelerometerSensor;
+    SensorEventListener accelerometerListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float xAxis = event.values[0];
+            float yAxis = event.values[1];
+
+            Config.gravity.x = -xAxis * 100f;
+            Config.gravity.y = yAxis * 100f;
+
+            // Do something with accelerometer data (x, y, z axes)
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // Handle accuracy changes if needed
+        }
+    };
 
     float[] probabilities = new float[]{
             0.05f, // very easy
@@ -30,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(accelerometerListener, accelerometerSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //game = new Game(findViewById(R.id.gameView));

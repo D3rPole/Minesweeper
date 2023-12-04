@@ -121,7 +121,6 @@ public class UI {
             paint.setColor(Color.rgb(120,120,120));
 
             if(!object.explosionSource) {
-                if(object.colliding) paint.setColor(Color.RED);
                 canvas.drawRect(
                         object.pos.x - object.width / 2,
                         object.pos.y - object.height / 2,
