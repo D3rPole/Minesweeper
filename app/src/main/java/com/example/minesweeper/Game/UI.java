@@ -8,8 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
-import com.example.minesweeper.Game.Physics.PhysicsObject;
-import com.example.minesweeper.Game.Physics.Scene;
+import com.example.minesweeper.Physics.PhysicsObject;
+import com.example.minesweeper.Physics.Scene;
 
 public class UI {
     ImageView view;
@@ -121,6 +121,7 @@ public class UI {
             paint.setColor(Color.rgb(120,120,120));
 
             if(!object.explosionSource) {
+                if(object.colliding) paint.setColor(Color.RED);
                 canvas.drawRect(
                         object.pos.x - object.width / 2,
                         object.pos.y - object.height / 2,

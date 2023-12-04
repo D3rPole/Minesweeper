@@ -3,13 +3,12 @@ package com.example.minesweeper.Game;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.minesweeper.Game.Physics.Scene;
+import com.example.minesweeper.Physics.Scene;
 
 public class Game {
     MineField mineField;
@@ -68,7 +67,7 @@ public class Game {
                         ui.drawExploded(x,y,mineField);
                         gameEnd = true;
                         physicsScene = new Scene(mineField, ui.width, ui.height);
-                        physicsScene.explodeAt(x, y);
+                        physicsScene.explodeAt(x, y, 1f / Config.simTPS);
                         Handler handler = new Handler();
                         running = true;
                         new Thread(() -> {

@@ -1,5 +1,6 @@
-package com.example.minesweeper.Game.Physics;
+package com.example.minesweeper.Physics;
 
+import com.example.minesweeper.Game.Config;
 import com.example.minesweeper.Game.MineField;
 
 public class Scene {
@@ -25,7 +26,7 @@ public class Scene {
         }
     }
 
-    public void explodeAt(int x, int y){
+    public void explodeAt(int x, int y, float dTime){
         Vec2 pos = new Vec2(x * xDist + xDist / 2,y * yDist + yDist / 2);
         for(PhysicsObject object : objects){
             float dist = pos.distance(object.pos);
@@ -33,15 +34,20 @@ public class Scene {
                 object.explosionSource = true;
                 continue;
             }
-            object.addVel(object.pos.subtract(pos).multiply(100f / dist));
-            object.addVel(Vec2.random(-30,30));
+            object.addVel(object.pos.subtract(pos).multiply(100f / dist), dTime);
+            object.addVel(Vec2.random(-30,30), dTime);
         }
     }
 
     public void update(float dTime){
         for(PhysicsObject object : objects){
             if(object.explosionSource) continue;
-            object.update(dTime);
+            object.update(dTime, Config.gravity);
+            for(PhysicsObject other : objects){
+                if(other == object) continue;
+                if(other.explosionSource) continue;
+                object.collide(other);
+            }
         }
     }
 }

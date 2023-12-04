@@ -1,4 +1,4 @@
-package com.example.minesweeper.Game.Physics;
+package com.example.minesweeper.Physics;
 
 public class Vec2 {
     // Ich hab die Klasse 1000x geschrieben, also jetzt darf mal ChatGPT ran :)
@@ -9,6 +9,15 @@ public class Vec2 {
     public Vec2(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Vec2(){
+        x = 0;
+        y = 0;
+    }
+
+    public Vec2 clone(){
+        return new Vec2(x,y);
     }
 
     public Vec2 add(Vec2 other) {
