@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.minesweeper.Game.Config;
 import com.example.minesweeper.Game.MineField;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ public class Scene {
     private int gridWidth = 10;
     private int gridHeight = 10;
     public Scene(MineField mineField, int uiWidth, int uiHeight){
-        simulationRect = new Rect(-250,-250, (int) ((float) uiWidth + 250), (int) ((float) uiHeight + 250));
+        simulationRect = new Rect(-100,-100, (int) ((float) uiWidth + 100), (int) ((float) uiHeight + 100));
         xDist = (float) uiWidth / mineField.width;
         yDist = (float) uiHeight / mineField.height;
         objects = new PhysicsObject[mineField.height * mineField.width];
@@ -58,24 +60,19 @@ public class Scene {
                 object.explosionSource = true;
                 continue;
             }
-            object.addVel(object.pos.subtract(pos).multiply(100f / dist), dTime);
+            object.addVel(object.pos.subtract(pos).multiply(1000f / dist), dTime);
             object.addVel(Vec2.random(-30,30), dTime);
         }
     }
 
     public void update(float dTime){
-        for(PhysicsObject object : objects){
-            if(object.explosionSource) continue;
-            object.update(dTime, Config.gravity);
-        }
-
         updateGrid();
 
         for(PhysicsObject object : objects){
             if(object.explosionSource) continue;
             int x =  (int) (gridWidth*(object.pos.x - simulationRect.left)/simulationRect.width());
             int y = (int) (gridHeight*(object.pos.y - simulationRect.top)/simulationRect.height());
-            LinkedList<PhysicsObject> collideWith = new LinkedList<>();
+            HashSet<PhysicsObject> collideWith = new HashSet<>();
             for (int i = -1; i <= 1; i++) {
                 if(x + i < 0 || x + i >= gridWidth) continue;
                 for (int j = -1; j <= 1; j++) {
@@ -90,6 +87,11 @@ public class Scene {
                 if(other.explosionSource) continue;
                 object.collide(other);
             }
+        }
+
+        for(PhysicsObject object : objects){
+            if(object.explosionSource) continue;
+            object.update(dTime, Config.gravity);
         }
 
         for(PhysicsObject object : objects){

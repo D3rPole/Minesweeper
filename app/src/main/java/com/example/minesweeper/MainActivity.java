@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
             float xAxis = event.values[0];
             float yAxis = event.values[1];
 
-            Config.gravity.x = -xAxis * 100f;
-            Config.gravity.y = yAxis * 100f;
+            Config.gravity.x = -xAxis * Config.gravityConstant;
+            Config.gravity.y = yAxis * Config.gravityConstant;
 
             // Do something with accelerometer data (x, y, z axes)
         }

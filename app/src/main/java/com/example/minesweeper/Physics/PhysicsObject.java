@@ -26,32 +26,26 @@ public class PhysicsObject {
     }
 
     public void clampInBoundingbox(Rect rect){
-        if(pos.x < rect.left + width){
-            pos.x = rect.left + width;
-        }
-        if(pos.x > rect.right - width){
-            pos.x = rect.right - width;
-        }
-        if(pos.y < rect.top + height){
-            pos.y = rect.top + height;
-        }
-        if(pos.y > rect.bottom - height){
-            pos.y = rect.bottom - height;
-        }
+        pos.x = clamp(pos.x,rect.left + width / 2,rect.right - width / 2);
+        pos.y = clamp(pos.y,rect.top + height / 2,rect.bottom - height / 2);
+    }
+
+    public float clamp(float value, float min, float max){
+        return Math.min(Math.max(value, min), max);
     }
 
     public void addVel(Vec2 vel,float dTime){
         prev_pos = prev_pos.subtract(vel.multiply(dTime));
     }
     public void collide(PhysicsObject other){
-        CollisionResult collisionResult = this.getCollisionInfo(other);
+        CollisionResult collisionResult = this.checkCollision(other);
         if (collisionResult.isColliding){
             pos = pos.add(collisionResult.normal.multiply(collisionResult.penetrationDepth / 2));
             other.pos.subtract(collisionResult.normal.multiply(collisionResult.penetrationDepth / 2));
         }
     }
 
-    private CollisionResult getCollisionInfo(PhysicsObject other) {
+    private CollisionResult checkCollision(PhysicsObject other) {
         // Calculate the bounds of 'this' object
         float thisLeft = pos.x;
         float thisRight = pos.x + width;
@@ -67,10 +61,11 @@ public class PhysicsObject {
         // Calculate overlap along both axes
         float xOverlap = Math.min(thisRight, otherRight) - Math.max(thisLeft, otherLeft);
         float yOverlap = Math.min(thisBottom, otherBottom) - Math.max(thisTop, otherTop);
+        boolean isColliding = xOverlap > 0 && yOverlap > 0;
 
         // Calculate collision normal
         Vec2 normal = new Vec2(0, 0);
-        if (xOverlap > 0 && yOverlap > 0) {
+        if (isColliding) {
             if (xOverlap < yOverlap) {
                 if (thisLeft < otherLeft) {
                     normal = new Vec2(-1, 0);
@@ -90,9 +85,9 @@ public class PhysicsObject {
         float penetrationDepth = Math.min(xOverlap, yOverlap);
 
         // Return collision information
-        boolean isColliding = xOverlap > 0 && yOverlap > 0;
         return new CollisionResult(isColliding, normal, penetrationDepth);
     }
+
 
 
 }

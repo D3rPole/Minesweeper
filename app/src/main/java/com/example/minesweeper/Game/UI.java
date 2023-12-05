@@ -5,11 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
 import com.example.minesweeper.Physics.PhysicsObject;
 import com.example.minesweeper.Physics.Scene;
+import com.example.minesweeper.Physics.Vec2;
 
 public class UI {
     ImageView view;
@@ -121,11 +123,12 @@ public class UI {
             paint.setColor(Color.rgb(120,120,120));
 
             if(!object.explosionSource) {
-                canvas.drawRect(
+                drawBoxRotated(object.pos, new Vec2(object.width, object.height),1);
+                /*canvas.drawRect(
                         object.pos.x - object.width / 2,
                         object.pos.y - object.height / 2,
                         object.pos.x + object.width / 2,
-                        object.pos.y + object.height / 2, paint);
+                        object.pos.y + object.height / 2, paint);*/
             }
 
             if(object.isMine){
@@ -146,5 +149,14 @@ public class UI {
         }
         view.invalidate();
         drawInMiddle("YOU LOST!", Color.RED);
+    }
+
+    void drawBoxRotated(Vec2 pos, Vec2 size, float angle){
+        Path path = new Path();
+        path.moveTo(pos.x - size.x / 2, pos.y - size.y / 2);
+        path.lineTo(pos.x + size.x / 2, pos.y - size.y / 2);
+        path.lineTo(pos.x + size.x / 2, pos.y + size.y / 2);
+        path.lineTo(pos.x - size.x / 2, pos.y + size.y / 2);
+        canvas.drawPath(path,paint);
     }
 }
