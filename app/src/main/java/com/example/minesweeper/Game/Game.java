@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.minesweeper.Physics.Scene;
+import com.example.minesweeper.Physics.PhysicsScene;
 
 public class Game {
     MineField mineField;
@@ -19,7 +19,7 @@ public class Game {
     private Button indicator;
     private boolean gameEnd = false;
 
-    private Scene physicsScene;
+    private PhysicsScene physicsScene;
 
     boolean running;
 
@@ -63,7 +63,7 @@ public class Game {
                 gameEnd = true;
 
                 // Create physicsScene
-                physicsScene = new Scene(mineField, ui.width, ui.height);
+                physicsScene = new PhysicsScene(mineField, ui.width, ui.height);
                 physicsScene.explodeAt(x, y, 1f / Config.simTPS);
                 Handler handler = new Handler();
                 running = true;

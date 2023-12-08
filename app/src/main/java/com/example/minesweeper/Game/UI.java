@@ -5,13 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
 import com.example.minesweeper.Physics.PhysicsObject;
-import com.example.minesweeper.Physics.Scene;
-import com.example.minesweeper.Physics.Vec2;
+import com.example.minesweeper.Physics.PhysicsScene;
 
 public class UI {
     ImageView view;
@@ -98,13 +96,13 @@ public class UI {
         view.postInvalidate();
     }
 
-    void drawPhysicsScene(Scene scene){
+    void drawPhysicsScene(PhysicsScene physicsScene){
         canvas.drawColor(Color.rgb(170,170,170));
         paint.setTextSize(textSize);
         float explosionX = 0;
         float explosionY = 0;
 
-        for(PhysicsObject object : scene.objects){
+        for(PhysicsObject object : physicsScene.objects){
             paint.setColor(Color.rgb(120,120,120));
 
             if(!object.explosionSource) {
