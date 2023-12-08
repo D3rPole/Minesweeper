@@ -9,24 +9,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.example.minesweeper.Game.Config;
 import com.example.minesweeper.Game.Game;
 
 public class MainActivity extends AppCompatActivity {
-    Spinner width;
-    Spinner height;
-    Spinner diff;
-    Button start;
+    private Spinner widthSpinner;
+    private Spinner difficultySpinner;
+    private Button flagButton;
+    private Button tapButton;
+    private Button flagTapIndicator;
 
-    SensorManager sensorManager;
-    Sensor accelerometerSensor;
-    SensorEventListener accelerometerListener = new SensorEventListener() {
+    private final SensorEventListener accelerometerListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             float xAxis = event.values[0];
@@ -34,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
             Config.gravity.x = -xAxis * Config.gravityConstant;
             Config.gravity.y = yAxis * Config.gravityConstant;
-
-            // Do something with accelerometer data (x, y, z axes)
         }
 
         @Override
@@ -57,35 +52,32 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        // initiate accelerometer for physics simulation
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(accelerometerListener, accelerometerSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //game = new Game(findViewById(R.id.gameView));
         initiateMenu();
         startFirstGame();
     }
 
     @SuppressLint("SetTextI18n")
     private void initiateMenu(){
-        width = findViewById(R.id.widthSpinner);
-        height = findViewById(R.id.heightSpinner);
-        diff = findViewById(R.id.diffSpinner);
+        widthSpinner = findViewById(R.id.widthSpinner);
+        difficultySpinner = findViewById(R.id.diffSpinner);
 
-        String[] options = new String[16];
-        for (int i = 0; i < 16; i++) {
+        String[] options = new String[11];
+        for (int i = 0; i < 11; i++) {
             options[i] = String.valueOf(i + 5);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        width.setAdapter(adapter);
-        width.setSelection(5);
-        height.setAdapter(adapter);
-        height.setSelection(5);
+        widthSpinner.setAdapter(adapter);
+        widthSpinner.setSelection(5);
 
         String[] diffOptions = new String[]{"\uD83D\uDE01 VERY EASY",
                 "\uD83D\uDE00 EASY",
@@ -95,28 +87,30 @@ public class MainActivity extends AppCompatActivity {
                 "\uD83D\uDE31\uD83D\uDE2D\uD83D\uDE2D\uD83D\uDE29\uD83D\uDE29"};
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, diffOptions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        diff.setAdapter(adapter);
-        diff.setSelection(0);
+        difficultySpinner.setAdapter(adapter);
+        difficultySpinner.setSelection(0);
 
         //Buttons
-        start = findViewById(R.id.startGameButton);
-        start.setOnClickListener(v -> {
+        Button startButton = findViewById(R.id.startGameButton);
+        startButton.setOnClickListener(v -> {
             if(game != null){
                 game.close();
             }
-            game = new Game(  width.getSelectedItemPosition() + 5,
-                             height.getSelectedItemPosition() + 5,
-                                   probabilities[diff.getSelectedItemPosition()],
+            game = new Game(  widthSpinner.getSelectedItemPosition() + 5,
+                                   probabilities[difficultySpinner.getSelectedItemPosition()],
                                    findViewById(R.id.gameView));
             game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton), findViewById(R.id.flagTapIndicator));
         });
+
+        flagButton = findViewById(R.id.flagButton);
+        tapButton = findViewById(R.id.tapButton);
+        flagTapIndicator = findViewById(R.id.flagTapIndicator);
     }
 
     public void startFirstGame(){
-        game = new Game(  width.getSelectedItemPosition() + 5,
-                height.getSelectedItemPosition() + 5,
-                probabilities[diff.getSelectedItemPosition()],
+        game = new Game(  widthSpinner.getSelectedItemPosition() + 5,
+                probabilities[difficultySpinner.getSelectedItemPosition()],
                 findViewById(R.id.gameView));
-        game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton), findViewById(R.id.flagTapIndicator));
+        game.setButtons(flagButton, tapButton, flagTapIndicator);
     }
 }
