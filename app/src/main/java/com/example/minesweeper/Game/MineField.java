@@ -1,7 +1,5 @@
 package com.example.minesweeper.Game;
 
-import android.util.Log;
-
 import java.util.Random;
 
 public class MineField {
@@ -20,7 +18,7 @@ public class MineField {
         this.height = height;
     }
 
-    public void generate(float p){
+    public void generateRandom(float p){
         Random random = new Random();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -32,7 +30,7 @@ public class MineField {
         }
     }
 
-    public void showEverything(){
+    public void revealAll(){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 lookedAt[i][j] = true;
