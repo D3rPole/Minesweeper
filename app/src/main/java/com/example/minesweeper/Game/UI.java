@@ -123,21 +123,27 @@ public class UI {
             paint.setColor(Color.rgb(120,120,120));
 
             if(!object.explosionSource) {
-                drawBoxRotated(object.pos, new Vec2(object.width, object.height),1);
-                /*canvas.drawRect(
+                //drawBoxRotated(object.pos, new Vec2(object.width, object.height),1);
+                canvas.drawRect(
                         object.pos.x - object.width / 2,
                         object.pos.y - object.height / 2,
                         object.pos.x + object.width / 2,
-                        object.pos.y + object.height / 2, paint);*/
+                        object.pos.y + object.height / 2, paint);
             }
 
             if(object.isMine){
+                String text = "\uD83D\uDCA3";
                 if(object.explosionSource){
-                    paint.setColor(Color.RED);
+                    text = "\uD83D\uDCA5";
                 }else {
                     paint.setColor(Color.rgb(50, 50, 50));
                 }
-                canvas.drawCircle(object.pos.x, object.pos.y, object.width / 2.5f, paint);
+                float textWidth = paint.measureText(text);
+                Rect bounds = new Rect();
+                paint.getTextBounds(text,0,1,bounds);
+                canvas.drawText(text, object.pos.x - textWidth / 2f,object.pos.y + bounds.height()/4f,paint);
+
+                //canvas.drawCircle(object.pos.x, object.pos.y, object.width / 2.5f, paint);
             }else if(object.neighbours > 0){
                 float[] f = new float[]{120f - object.neighbours * 15,1f,1f};
                 paint.setColor(Color.HSVToColor(f));
