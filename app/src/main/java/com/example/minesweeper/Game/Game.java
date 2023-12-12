@@ -17,6 +17,7 @@ public class Game {
     private Button flagButton;
     private Button tapButton;
     private Button indicator;
+    private Button flagCounter;
     private boolean gameEnd = false;
 
     private PhysicsScene physicsScene;
@@ -27,7 +28,7 @@ public class Game {
     public Game(int minefieldSize, float probability, ImageView view){
         mineField = new MineField(minefieldSize,minefieldSize);
         ui = new UI(1000, 1000, view);
-        mineField.generateRandom(probability);
+        mineField.placeRandomMines((int) (minefieldSize*minefieldSize * probability + 0.1f));
 
         ui.view.setOnTouchListener((v, event) -> {
             if(gameEnd) return true;
@@ -52,6 +53,7 @@ public class Game {
                 // Winning code
                 gameEnd = true;
                 mineField.revealAll();
+                updateFlagCounter();
                 ui.drawMineField(mineField);
                 ui.drawInMiddle("YOU WON!", Color.GREEN);
                 return;
@@ -90,6 +92,7 @@ public class Game {
                 return;
             }
         }
+        updateFlagCounter();
         ui.drawMineField(mineField);
     }
 
@@ -103,12 +106,21 @@ public class Game {
         return new int[]{relX / (ui.width/mineField.width), relY / (ui.width/mineField.width)};
     }
 
-    public void setButtons(Button flag, Button tap, Button indicator){
+    @SuppressLint("SetTextI18n")
+    public void setButtons(Button flag, Button tap, Button indicator, Button mineCount, Button flagCounter){
         flagButton = flag;
         tapButton = tap;
+        mineCount.setText("\uD83D\uDCA3: " + mineField.mineCount);
+        this.flagCounter = flagCounter;
         this.indicator = indicator;
+        updateFlagCounter();
         flagButton.setOnClickListener(v -> setFlag());
         tapButton.setOnClickListener(v -> setTap());
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void updateFlagCounter(){
+        flagCounter.setText("\uD83D\uDEA9: " + mineField.flagCount);
     }
 
     private void setFlag(){

@@ -1,5 +1,7 @@
 package com.example.minesweeper.Game;
 
+import android.util.Log;
+
 import java.util.Random;
 
 public class MineField {
@@ -9,6 +11,8 @@ public class MineField {
     public int width;
     public int height;
     int mineCount = 0;
+    int flagCount = 0;
+    boolean firstLook = true;
 
     MineField(int width, int height){
         field = new boolean[width][height];
@@ -18,16 +22,22 @@ public class MineField {
         this.height = height;
     }
 
-    public void generateRandom(float p){
-        Random random = new Random();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                field[i][j] = random.nextFloat() < p;
-                if(field[i][j]) mineCount++;
-                lookedAt[i][j] = false;
-                flagged[i][j] = false;
-            }
+    public void placeRandomMines(int amount){
+        Log.i("",""+amount);
+        for (int i = 0; i < amount; i++) {
+            placeRandomMine();
         }
+    }
+
+    private void placeRandomMine(){
+        Random random = new Random();
+        int x,y;
+        do{
+            x = random.nextInt(width);
+            y = random.nextInt(width);
+        }while(field[x][y]);
+        mineCount++;
+        field[x][y] = true;
     }
 
     public void revealAll(){
@@ -40,8 +50,19 @@ public class MineField {
 
     public int lookAt(int x, int y){
         if(x < 0 || y < 0 || x >= width || y >= height || lookedAt[x][y]) return 0;
+        if(firstLook){
+            if(field[x][y]){
+                // Erster klick darf keine Miene sein. Wenn es eine ist, wird diese verschoben.
+                placeRandomMine();
+                field[x][y] = false;
+            }
+            firstLook = false;
+        }
         lookedAt[x][y] = true;
-        flagged[x][y] = false;
+        if(flagged[x][y]){
+            flagged[x][y] = false;
+            flagCount--;
+        }
         if(field[x][y]){
             return -1;
         }
@@ -57,10 +78,19 @@ public class MineField {
 
     public void setFlag(int x, int y){
         if(lookedAt[x][y]){
-            flagged[x][y] = false;
+            if(flagged[x][y]){
+                flagged[x][y] = false;
+                flagCount--;
+            }
             return;
         }
-        flagged[x][y] = !flagged[x][y];
+        if(flagged[x][y]){
+            flagged[x][y] = false;
+            flagCount--;
+        }else{
+            flagged[x][y] = true;
+            flagCount++;
+        }
     }
 
     boolean checkForWin(){

@@ -40,12 +40,12 @@ public class MainActivity extends AppCompatActivity {
     };
 
     float[] probabilities = new float[]{
-            0.05f, // very easy
-            0.1f,  // easy
-            0.2f,  // mid
-            0.3f,  // hard
-            0.4f,  // expert
-            0.5f   //expert+ ?
+            0.04f, // very easy
+            0.08f,  // easy
+            0.12f,  // mid
+            0.16f,  // hard
+            0.20f,  // expert
+            0.24f   //expert+ ?
     };
 
     Game game;
@@ -99,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
             game = new Game(  widthSpinner.getSelectedItemPosition() + 5,
                                    probabilities[difficultySpinner.getSelectedItemPosition()],
                                    findViewById(R.id.gameView));
-            game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton), findViewById(R.id.flagTapIndicator));
+            game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton),
+                    findViewById(R.id.flagTapIndicator), findViewById(R.id.mineCount),
+                    findViewById(R.id.flagCounter));
         });
 
         flagButton = findViewById(R.id.flagButton);
@@ -111,6 +113,6 @@ public class MainActivity extends AppCompatActivity {
         game = new Game(  widthSpinner.getSelectedItemPosition() + 5,
                 probabilities[difficultySpinner.getSelectedItemPosition()],
                 findViewById(R.id.gameView));
-        game.setButtons(flagButton, tapButton, flagTapIndicator);
+        game.setButtons(flagButton, tapButton, flagTapIndicator, findViewById(R.id.mineCount), findViewById(R.id.flagCounter));
     }
 }
