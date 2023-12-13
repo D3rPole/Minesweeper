@@ -14,17 +14,33 @@ public class PhysicsObject {
     public float width;
     public float height;
 
+    /**
+     * Constructs a PhysicsObject with a specified position.
+     *
+     * @param pos The initial position of the object.
+     */
     public PhysicsObject(Vec2 pos) {
         this.pos = pos;
         this.prev_pos = pos.clone();
     }
 
+    /**
+     * Updates the position of the object based on time and acceleration.
+     *
+     * @param dTime The time increment for the update.
+     * @param acc   The acceleration vector.
+     */
     public void update(float dTime, Vec2 acc){
         Vec2 tempPos = pos;
         pos = pos.add(pos.subtract(prev_pos)).add(acc.multiply(dTime*dTime));
         prev_pos = tempPos;
     }
 
+    /**
+     * Ensures the object stays within the specified bounding box.
+     *
+     * @param rect The bounding box within which the object should stay.
+     */
     public void clampInBoundingbox(Rect rect){
         pos.x = clamp(pos.x,rect.left + width / 2,rect.right - width / 2);
         pos.y = clamp(pos.y,rect.top + height / 2,rect.bottom - height / 2);
@@ -34,9 +50,21 @@ public class PhysicsObject {
         return Math.min(Math.max(value, min), max);
     }
 
+    /**
+     * Adds velocity to the object.
+     *
+     * @param vel   The velocity vector to be added.
+     * @param dTime The time increment for velocity addition.
+     */
     public void addVel(Vec2 vel,float dTime){
         prev_pos = prev_pos.subtract(vel.multiply(dTime));
     }
+
+    /**
+     * Handles collision between this object and another PhysicsObject.
+     *
+     * @param other The other PhysicsObject to check collision with.
+     */
     public void collide(PhysicsObject other){
         CollisionResult collisionResult = this.checkCollision(other);
         if (collisionResult.isColliding){
@@ -45,6 +73,12 @@ public class PhysicsObject {
         }
     }
 
+    /**
+     * Checks for collision between this object and another PhysicsObject.
+     *
+     * @param other The other PhysicsObject to check collision with.
+     * @return CollisionResult object containing collision information.
+     */
     private CollisionResult checkCollision(PhysicsObject other) {
         // Calculate the bounds of 'this' object
         float thisLeft = pos.x;

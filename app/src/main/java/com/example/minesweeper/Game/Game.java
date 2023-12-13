@@ -24,11 +24,18 @@ public class Game {
 
     boolean running;
 
+    /**
+     * Initializes the game with a minefield, UI elements, and randomly placed mines.
+     *
+     * @param minefieldSize The size of the minefield (width and height).
+     * @param percentage    The percentage of mine placement.
+     * @param view          The ImageView used for the game UI.
+     */
     @SuppressLint("ClickableViewAccessibility")
-    public Game(int minefieldSize, float probability, ImageView view){
+    public Game(int minefieldSize, float percentage, ImageView view){
         mineField = new MineField(minefieldSize,minefieldSize);
         ui = new UI(1000, 1000, view);
-        mineField.placeRandomMines((int) (minefieldSize*minefieldSize * probability + 0.1f));
+        mineField.placeRandomMines((int) (minefieldSize*minefieldSize * percentage + 0.1f));
 
         ui.view.setOnTouchListener((v, event) -> {
             if(gameEnd) return true;
@@ -41,13 +48,20 @@ public class Game {
         ui.drawMineField(mineField);
     }
 
+    /**
+     * Executes an action based on the touch event on the game UI.
+     *
+     * @param event The MotionEvent triggering the action.
+     */
     private void runAction(MotionEvent event){
+        // When touch happens
         int[] converted = toMinefieldCoordinates(event.getX(), event.getY());
         if(converted.length == 0) return;
         int x = converted[0];
         int y = converted[1];
 
         if(useFlag){
+            // When flag tool in use
             mineField.setFlag(x, y);
             if(mineField.checkForWin()){
                 // Winning code
@@ -59,8 +73,9 @@ public class Game {
                 return;
             }
         }else {
-            if (mineField.lookAt(x, y) == -1) {
-                // Losing code
+            // When tap tool in use
+            if (mineField.lookAt(x, y) == -1) { // look at x,y. If its a mine you lose
+                /* YOU LOST */
                 mineField.revealAll();
                 gameEnd = true;
 
@@ -96,6 +111,13 @@ public class Game {
         ui.drawMineField(mineField);
     }
 
+    /**
+     * Converts screen touch coordinates to minefield coordinates for interaction.
+     *
+     * @param x The x-coordinate of the touch.
+     * @param y The y-coordinate of the touch.
+     * @return An array containing the converted minefield coordinates [x, y].
+     */
     private int[] toMinefieldCoordinates(float x, float y){
         int stretchedTo = Math.min(ui.view.getWidth(), ui.view.getHeight());
         int maxDim = Math.max(ui.width, ui.height);
@@ -106,6 +128,15 @@ public class Game {
         return new int[]{relX / (ui.width/mineField.width), relY / (ui.width/mineField.width)};
     }
 
+    /**
+     * Sets up UI buttons and updates mine count and flag count display.
+     *
+     * @param flag        The button for flag placement.
+     * @param tap         The button for tile tapping.
+     * @param indicator   The button indicating the current mode (flag or tap).
+     * @param mineCount   The button displaying the total number of mines.
+     * @param flagCounter The button displaying the number of flags placed.
+     */
     @SuppressLint("SetTextI18n")
     public void setButtons(Button flag, Button tap, Button indicator, Button mineCount, Button flagCounter){
         flagButton = flag;
@@ -118,21 +149,33 @@ public class Game {
         tapButton.setOnClickListener(v -> setTap());
     }
 
+    /**
+     * Updates the displayed count of flags based on the number of flags placed.
+     */
     @SuppressLint("SetTextI18n")
     private void updateFlagCounter(){
         flagCounter.setText("\uD83D\uDEA9: " + mineField.flagCount);
     }
 
+    /**
+     * Sets the game mode to flag placement, enabling flag placement on the minefield.
+     */
     private void setFlag(){
         useFlag = true;
         indicator.setText("\uD83D\uDEA9");
     }
 
+    /**
+     * Sets the game mode to tile tapping, allowing tile reveal on the minefield.
+     */
     private void setTap(){
         useFlag = false;
         indicator.setText("\uD83D\uDC47");
     }
 
+    /**
+     * Cleans up game resources and UI elements for game closure or reset.
+     */
     @SuppressLint("ClickableViewAccessibility")
     public void close(){
         ui.view.setOnTouchListener(null);

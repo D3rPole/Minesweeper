@@ -17,6 +17,13 @@ public class PhysicsScene {
     private final int gridWidth = 10;
     private final int gridHeight = 10;
 
+    /**
+     * Constructs a PhysicsScene based on the MineField, UI width, and UI height.
+     *
+     * @param mineField The MineField object representing the game grid.
+     * @param uiWidth   The width of the UI canvas.
+     * @param uiHeight  The height of the UI canvas.
+     */
     public PhysicsScene(MineField mineField, int uiWidth, int uiHeight){
         simulationRect = new Rect(-100,-100, (int) ((float) uiWidth + 100), (int) ((float) uiHeight + 100));
         xDist = (float) uiWidth / mineField.width;
@@ -36,6 +43,9 @@ public class PhysicsScene {
         }
     }
 
+    /**
+     * Updates the grid partitioning based on object positions.
+     */
     private void updateGrid(){
         grid = new LinkedList[gridWidth][gridHeight];
         for(PhysicsObject object : objects){
@@ -50,6 +60,13 @@ public class PhysicsScene {
         }
     }
 
+    /**
+     * Initiates an explosion at specified coordinates with a given duration.
+     *
+     * @param x      The x-coordinate of the explosion.
+     * @param y      The y-coordinate of the explosion.
+     * @param dTime  The time increment for the simulation update.
+     */
     public void explodeAt(int x, int y, float dTime){
         Vec2 pos = new Vec2(x * xDist + xDist / 2,y * yDist + yDist / 2);
         for(PhysicsObject object : objects){
@@ -63,6 +80,11 @@ public class PhysicsScene {
         }
     }
 
+    /**
+     * Updates the physics simulation for a specified time increment.
+     *
+     * @param dTime The time increment for the simulation update.
+     */
     public void update(float dTime){
         updateGrid();
 

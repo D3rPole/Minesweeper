@@ -18,6 +18,14 @@ public class UI {
     final int height;
     final int width;
     int textSize;
+
+    /**
+     * Constructs the UI with a specified width, height, and ImageView for display.
+     *
+     * @param width  The width of the UI canvas.
+     * @param height The height of the UI canvas.
+     * @param view   The ImageView used for displaying the UI.
+     */
     @SuppressLint("ClickableViewAccessibility")
     UI(int width, int height, ImageView view){
         this.width = width;
@@ -29,6 +37,11 @@ public class UI {
         this.view.setImageBitmap(bitmap);
     }
 
+    /**
+     * Draws the minefield and its elements based on the provided MineField object.
+     *
+     * @param mineField The MineField object representing the game grid.
+     */
     public void drawMineField(MineField mineField){
         canvas.drawColor(Color.rgb(120,120,120));
         int mineFieldWidth = mineField.width;
@@ -49,6 +62,15 @@ public class UI {
         view.postInvalidate();
     }
 
+    /**
+     * Draws a single cell in the minefield grid.
+     *
+     * @param x          The x-coordinate of the cell.
+     * @param y          The y-coordinate of the cell.
+     * @param distX      The horizontal distance between cells.
+     * @param distY      The vertical distance between cells.
+     * @param mineField  The MineField object representing the game grid.
+     */
     private void drawCell(int x, int y, float distX, float distY, MineField mineField){
         if(!mineField.lookedAt[x][y]){
             paint.setColor(Color.rgb(100,100,100));
@@ -74,6 +96,12 @@ public class UI {
         // Mine doesn't have to be drawn here since it only gets drawn if physics run, and they are drawn differently
     }
 
+    /**
+     * Draws the grid lines on the canvas.
+     *
+     * @param distX The horizontal distance between cells.
+     * @param distY The vertical distance between cells.
+     */
     private void drawGrid(float distX, float distY){
         paint.setColor(Color.rgb(200,200,200));
         for (int i = 0; i <= width; i++) {
@@ -84,6 +112,12 @@ public class UI {
         }
     }
 
+    /**
+     * Draws a message in the middle of the UI.
+     *
+     * @param text  The message to be displayed.
+     * @param color The color of the message.
+     */
     void drawInMiddle(String text, int color){
         paint.setColor(Color.argb(100,0,0,0));
         canvas.drawRect(0, height / 2f - 70, width, height / 2f + 70, paint);
@@ -96,6 +130,11 @@ public class UI {
         view.postInvalidate();
     }
 
+    /**
+     * Draws the physics scene including objects and explosions.
+     *
+     * @param physicsScene The PhysicsScene object containing scene information.
+     */
     void drawPhysicsScene(PhysicsScene physicsScene){
         canvas.drawColor(Color.rgb(170,170,170));
         paint.setTextSize(textSize);
@@ -131,6 +170,13 @@ public class UI {
         drawInMiddle("YOU LOST!", Color.RED);
     }
 
+    /**
+     * Draws text centered at a specified position.
+     *
+     * @param x     The x-coordinate for the center of the text.
+     * @param y     The y-coordinate for the center of the text.
+     * @param text  The text to be drawn.
+     */
     void drawTextCentered(float x, float y, String text){
         float textWidth = paint.measureText(text);
         Paint.FontMetrics fontMetrics = paint.getFontMetrics();

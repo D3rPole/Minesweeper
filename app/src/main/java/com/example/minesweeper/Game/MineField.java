@@ -14,6 +14,12 @@ public class MineField {
     int flagCount = 0;
     boolean firstLook = true;
 
+    /**
+     * Constructor for MineField initializing its dimensions.
+     *
+     * @param width  The width of the minefield.
+     * @param height The height of the minefield.
+     */
     MineField(int width, int height){
         field = new boolean[width][height];
         lookedAt = new boolean[width][height];
@@ -22,6 +28,11 @@ public class MineField {
         this.height = height;
     }
 
+    /**
+     * Places a specified amount of mines randomly in the minefield.
+     *
+     * @param amount The number of mines to be placed.
+     */
     public void placeRandomMines(int amount){
         Log.i("",""+amount);
         for (int i = 0; i < amount; i++) {
@@ -29,6 +40,9 @@ public class MineField {
         }
     }
 
+    /**
+     * Places one random mine
+     */
     private void placeRandomMine(){
         Random random = new Random();
         int x,y;
@@ -40,6 +54,9 @@ public class MineField {
         field[x][y] = true;
     }
 
+    /**
+     * Reveals all cells in the minefield.
+     */
     public void revealAll(){
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -48,6 +65,13 @@ public class MineField {
         }
     }
 
+    /**
+     * Handles revealing a cell at given coordinates and checks for mines.
+     *
+     * @param x The x-coordinate of the cell.
+     * @param y The y-coordinate of the cell.
+     * @return -1 if the cell contains a mine, otherwise the count of neighboring mines.
+     */
     public int lookAt(int x, int y){
         if(x < 0 || y < 0 || x >= width || y >= height || lookedAt[x][y]) return 0;
         if(firstLook){
@@ -76,6 +100,12 @@ public class MineField {
         return neighbours;
     }
 
+    /**
+     * Sets or removes a flag at the specified coordinates in the minefield.
+     *
+     * @param x The x-coordinate of the cell.
+     * @param y The y-coordinate of the cell.
+     */
     public void setFlag(int x, int y){
         if(lookedAt[x][y]){
             if(flagged[x][y]){
@@ -93,6 +123,11 @@ public class MineField {
         }
     }
 
+    /**
+     * Checks if the game is won by verifying the correct placement of flags.
+     *
+     * @return True if all flags are correctly placed on mines, otherwise false.
+     */
     boolean checkForWin(){
         int rightGuessCount = 0;
         for (int i = 0; i < width; i++) {
@@ -109,6 +144,13 @@ public class MineField {
         return rightGuessCount == mineCount;
     }
 
+    /**
+     * Checks the number of neighboring mines for a given cell.
+     *
+     * @param x The x-coordinate of the cell.
+     * @param y The y-coordinate of the cell.
+     * @return The count of neighboring mines for the specified cell.
+     */
     public int checkNeighbours(int x, int y){
         int count = 0;
         for (int i = -1; i <= 1; i++) {

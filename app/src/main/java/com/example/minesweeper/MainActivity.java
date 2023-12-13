@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private Button flagButton;
     private Button tapButton;
     private Button flagTapIndicator;
+    private Button mineCountIndicator;
+    private Button flagCountIndicator;
 
     private final SensorEventListener accelerometerListener = new SensorEventListener() {
         @Override
@@ -34,12 +36,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // Handle accuracy changes if needed
-        }
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
     };
 
-    float[] probabilities = new float[]{
+    // percent of fields that are mines, per difficulty
+    float[] percent = new float[]{
             0.04f, // very easy
             0.08f,  // easy
             0.12f,  // mid
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void initiateMenu(){
+        // values are given to the spinners
         widthSpinner = findViewById(R.id.widthSpinner);
         difficultySpinner = findViewById(R.id.diffSpinner);
 
@@ -85,34 +87,39 @@ public class MainActivity extends AppCompatActivity {
                 "\uD83D\uDE10 HARD",
                 "☹️ EXPERT",
                 "\uD83D\uDE31\uD83D\uDE2D\uD83D\uDE2D\uD83D\uDE29\uD83D\uDE29"};
+
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, diffOptions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(adapter);
         difficultySpinner.setSelection(0);
 
-        //Buttons
+        //Get all Buttons
+        flagButton = findViewById(R.id.flagButton);
+        tapButton = findViewById(R.id.tapButton);
+        flagTapIndicator = findViewById(R.id.flagTapIndicator);
+        mineCountIndicator = findViewById(R.id.mineCount);
+        flagCountIndicator = findViewById(R.id.flagCounter);
+
+        //Give start button its function
         Button startButton = findViewById(R.id.startGameButton);
         startButton.setOnClickListener(v -> {
             if(game != null){
                 game.close();
             }
+            // Create Game
             game = new Game(  widthSpinner.getSelectedItemPosition() + 5,
-                                   probabilities[difficultySpinner.getSelectedItemPosition()],
+                                   percent[difficultySpinner.getSelectedItemPosition()],
                                    findViewById(R.id.gameView));
-            game.setButtons(findViewById(R.id.flagButton), findViewById(R.id.tapButton),
-                    findViewById(R.id.flagTapIndicator), findViewById(R.id.mineCount),
-                    findViewById(R.id.flagCounter));
+            // Give buttons to Game object
+            game.setButtons(flagButton, tapButton, flagTapIndicator, mineCountIndicator, flagCountIndicator);
         });
 
-        flagButton = findViewById(R.id.flagButton);
-        tapButton = findViewById(R.id.tapButton);
-        flagTapIndicator = findViewById(R.id.flagTapIndicator);
     }
 
     public void startFirstGame(){
         game = new Game(  widthSpinner.getSelectedItemPosition() + 5,
-                probabilities[difficultySpinner.getSelectedItemPosition()],
+                percent[difficultySpinner.getSelectedItemPosition()],
                 findViewById(R.id.gameView));
-        game.setButtons(flagButton, tapButton, flagTapIndicator, findViewById(R.id.mineCount), findViewById(R.id.flagCounter));
+        game.setButtons(flagButton, tapButton, flagTapIndicator, mineCountIndicator, flagCountIndicator);
     }
 }
